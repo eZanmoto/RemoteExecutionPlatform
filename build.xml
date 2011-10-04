@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<project name="REP" basedir="." default="main">
+
+    <property name="production.src" value="src"/>
+
+    <property name="build.dir"      value="build"/>
+    <property name="classes.dir"    value="${build.dir}/classes"/>
+    <property name="jar.dir"        value="${build.dir}/jar"/>
+    <property name="junit.dir"      value="${build.dir}/junit"/>
+    <property name="doc.dir"        value="${build.dir}/docs"/>
+    <property name="api.dir"        value="${doc.dir}/api"/>
+
+    <property name="lib.dir"        value="/usr/share/java"/>
+
+    <property name="junit.jar"      value="junit4.jar"/>
+    <property name="guava.jar"      value="guava-r09.jar"/>
+    <property name="production.jar" value="${ant.project.name}.jar"/>
+
+    <path id="classpath">
+        <fileset dir="${lib.dir}">
+            <include name="${junit.jar}"/>
+            <include name="${guava.jar}"/>
+        </fileset>
+    </path>
+
+    <path id="classpath.test">
+        <path refid="classpath"/>
+        <pathelement location="${classes.dir}"/>
+    </path>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+
+    <target name="cleandocs">
+        <delete dir="${doc.dir}"/>
+    </target>
+
+    <target name="cleanall" depends="clean,cleandocs"/>
+
+    <target name="compile">
+        <mkdir dir="${classes.dir}"/>
+        <javac srcdir="${production.src}" destdir="${classes.dir}"
+               classpathref="classpath"/>
+    </target>
+
+    <target name="jar" depends="compile">
+        <mkdir dir="${jar.dir}" />
+        <jar destfile="${jar.dir}/${production.jar}"
+             basedir="${classes.dir}"
+             excludes="**/test/">
+        </jar>
+    </target>
+
+    <target name="javadoc" depends="cleandocs">
+        <javadoc packagenames="com.ezanmoto.*.*"
+                 sourcepath="${production.src}"
+                 classpathref="classpath"
+                 destdir="${api.dir}"/>
+    </target>
+
+    <target name="junit" depends="main">
+        <mkdir dir="${junit.dir}" />
+
+        <junit printsummary="true" fork="false" haltonfailure="false">
+            <classpath refid="classpath.test"/>
+            <formatter type="xml"/>
+
+            <batchtest todir="${junit.dir}">
+                <fileset dir="${production.src}">
+                    <include name="**/*Test.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+
+        <junitreport todir="${junit.dir}">
+            <fileset dir="${junit.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report todir="${junit.dir}"/>
+        </junitreport>
+
+        <path>
+            <pathelement location="${junit.dir}/index.html"/>
+        </path>
+    </target>
+
+    <target name="run"  depends="jar">
+        <java jar="${jar.dir}/${production.jar}" fork="true">
+              <classpath refid="classpath"/>
+        </java>
+    </target>
+
+    <target name="main" depends="clean,jar"/>
+    <target name="all"  depends="main,javadoc"/>
+
+</project>
