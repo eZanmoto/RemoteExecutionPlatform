@@ -13,7 +13,7 @@ import java.net.Socket;
  *
  * @author S. M. Kelleher
  */
-public class RemoteFunction<T> {
+public class RemoteFunction<T> implements REPClient {
 
     private final Callable<T> function;
 
@@ -31,9 +31,11 @@ public class RemoteFunction<T> {
         this.function = function;
     }
 
+    @Override
     public T call() {
         Socket socket = Sockets.newSocket( "localhost", REPServer.REP_PORT );
         Sockets.writeObjectTo( socket, function );
-        return (T) Sockets.readObjectFrom( socket );
+        // return (T) Sockets.readObjectFrom( socket );
+        return null;
     }
 }

@@ -39,7 +39,7 @@ public enum FunctionExecutor implements REPServer, Runnable {
         listenTo( server );
     }
 
-    public void listenTo( ServerSocket server ) {
+    private void listenTo( ServerSocket server ) {
         while ( running ) {
             Socket client = Sockets.acceptFrom( server );
             Callable function = (Callable) Sockets.readObjectFrom( client );
