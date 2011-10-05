@@ -13,9 +13,10 @@ import java.net.Socket;
  *
  * @author S. M. Kelleher
  */
-public class RemoteFunction<T> implements REPClient {
+public class RemoteFunction {
 
-    private final Callable<T> function;
+    private RemoteFunction() {
+    }
 
     /**
      * Factory method to create new {@code RemoteFunction}s.
@@ -23,16 +24,7 @@ public class RemoteFunction<T> implements REPClient {
      * @param function the function to call on the remote device
      * @return a new {@code RemoteFunction}
      */
-    public static<T> RemoteFunction<T> calls( Callable<T> function ) {
-        return new RemoteFunction<T>( function );
-    }
-
-    private RemoteFunction( Callable<T> function ) {
-        this.function = function;
-    }
-
-    @Override
-    public T call() {
+    public static <T> T invoke( Callable<T> function ) {
         Socket socket = Sockets.newSocket( "localhost", REPServer.REP_PORT );
         Sockets.writeObjectTo( socket, function );
         SerializableObject o =

@@ -24,12 +24,13 @@ public class RemoteFunctionTest implements Serializable {
     @Test
     public void sumToN() {
         final int expected = 42;
-        RemoteFunction f = RemoteFunction.calls( new Callable<Integer>() {
-            public Integer call() {
-                return expected;
-            }
-        } );
-        assertEquals( Integer.valueOf( expected ), f.call() );
+        assertEquals( Integer.valueOf( expected ),
+            RemoteFunction.invoke( new Callable<Integer>() {
+                public Integer call() {
+                    return expected;
+                }
+            } )
+        );
     }
 
     @After
