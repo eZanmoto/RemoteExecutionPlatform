@@ -5,12 +5,14 @@ import com.ezanmoto.rep.FunctionExecutor;
 import com.ezanmoto.rep.RemoteFunction;
 import com.ezanmoto.rep.REPServer;
 
+import java.io.Serializable;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
-public class RemoteFunctionTest {
+public class RemoteFunctionTest implements Serializable {
 
     private final REPServer server = FunctionExecutor.getInstance();
 

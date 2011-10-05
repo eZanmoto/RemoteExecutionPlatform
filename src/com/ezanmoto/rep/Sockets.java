@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -77,7 +78,7 @@ class Sockets {
         }
     }
 
-    public static void writeObjectTo( Socket client, Object o ) {
+    public static void writeObjectTo( Socket client, Serializable o ) {
         final OutputStream os = getOutputStreamFor( client );
         final ObjectOutputStream out = newObjectOutputStreamFor( os );
         try {

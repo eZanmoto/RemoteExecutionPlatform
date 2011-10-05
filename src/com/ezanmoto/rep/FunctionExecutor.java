@@ -44,7 +44,7 @@ public enum FunctionExecutor implements REPServer, Runnable {
             Socket client = Sockets.acceptFrom( server );
             Callable function = (Callable) Sockets.readObjectFrom( client );
             final Object result = function.call();
-            Sockets.writeObjectTo( client, result );
+            Sockets.writeObjectTo( client, SerializableObject.from( result ) );
         }
     }
 

@@ -35,7 +35,8 @@ public class RemoteFunction<T> implements REPClient {
     public T call() {
         Socket socket = Sockets.newSocket( "localhost", REPServer.REP_PORT );
         Sockets.writeObjectTo( socket, function );
-        // return (T) Sockets.readObjectFrom( socket );
-        return null;
+        SerializableObject o =
+            (SerializableObject) Sockets.readObjectFrom( socket );
+        return (T) o.getObject();
     }
 }
