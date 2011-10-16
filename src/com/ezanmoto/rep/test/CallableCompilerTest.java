@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 
 public class CallableCompilerTest {
 
-    private static final File TEST_DIR  = new File( "test" );
+    private static final File TEST_DIR  = new File( "build/junit/src" );
     private static final File TEST_FILE =
         new File( TEST_DIR, "TestClass.java" );
 
@@ -31,24 +31,30 @@ public class CallableCompilerTest {
 
     @Test
     public void compile() {
-        writeTestFile(
+        final String filename = "TestClass";
+        final File source = fileNamed( filename );
+        writeTestFile( source,
             "import com.ezanmoto.rep.Callable;\n\n"
-          + "public class TestClass implements Callable {\n"
+          + "public class " + filename + " implements Callable {\n"
           + "    public Object call() {\n"
           + "        return \"" + EXPECTED_RESULT + "\";\n"
           + "    }\n"
           + "}"
         );
-        Callable method = compiler.compile( TEST_FILE );
+        Callable method = compiler.compile( source );
         final Object result = method.call();
         assertEquals( EXPECTED_RESULT, result );
     }
 
-    private static void writeTestFile( String contents ) {
+    private static File fileNamed( String name ) {
+        return new File( TEST_DIR, name + ".java" );
+    }
+
+    private static void writeTestFile( File testFile, String contents ) {
         BufferedWriter out = null;
         try {
-            TEST_FILE.getParentFile().mkdirs();
-            final FileWriter writer  = new FileWriter( TEST_FILE );
+            testFile.getParentFile().mkdirs();
+            final FileWriter writer  = new FileWriter( testFile );
             out = new BufferedWriter( writer );
             out.write( contents );
         } catch ( IOException e ) {
@@ -61,15 +67,17 @@ public class CallableCompilerTest {
     @Test
     public void compileSum() {
         final Integer expected = 2;
-        writeTestFile(
+        final String filename = "Add";
+        final File source = fileNamed( filename );
+        writeTestFile( source,
             "import com.ezanmoto.rep.Callable;\n\n"
-          + "public class TestClass implements Callable {\n"
+          + "public class " + filename + " implements Callable {\n"
           + "    public Object call() {\n"
           + "        return new Integer( 1 + 1 );\n"
           + "    }\n"
           + "}"
         );
-        Callable method = compiler.compile( TEST_FILE );
+        Callable method = compiler.compile( source );
         final Object result = method.call();
         assertEquals( expected, result );
     }

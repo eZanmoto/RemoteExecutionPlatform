@@ -11,7 +11,8 @@ public enum CallableCompiler implements Compiler<Callable> {
     INSTANCE;
 
     private static final File ERROR_LOG = new File( "build/junit/stderr" );
-    private static final File CLASSES_DIR = new File( "/home/sean/classes" );
+    private static final File CLASSES_DIR = new File( "build/classes" );
+    private static final String CLASSPATH = "src";
 
     private static final String CP_FLAG   = "-classpath";
     private static final String DEST_FLAG = "-d";
@@ -23,7 +24,7 @@ public enum CallableCompiler implements Compiler<Callable> {
     public Callable compile( File source ) {
         if ( source.exists() ) {
             javac( DEST_FLAG, CLASSES_DIR.toString(),
-                   CP_FLAG, "/home/sean/code/java/RemoteExecutionPlatform/src",
+                   CP_FLAG, CLASSPATH,
                    source.toString() );
             final String name = removeExtensionFrom( source.getName() );
             Class c = loadClass( Callable.class, name );
@@ -38,7 +39,7 @@ public enum CallableCompiler implements Compiler<Callable> {
         final int exitCode = com.sun.tools.javac.Main.compile( command, out );
         if ( exitCode != 0 ) {
             throw new REPException( "Error compiling, check '"
-                + ERROR_LOG + "' for details" );
+                + ERROR_LOG.getAbsolutePath() + "' for details" );
         }
     }
 
