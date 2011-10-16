@@ -31,29 +31,7 @@ public class CallableCompilerTest {
 
     @Test
     public void compile() {
-        writeTestFile();
-        Callable method = compiler.compile( TEST_FILE );
-        final Object result = method.call();
-        assertEquals( EXPECTED_RESULT, result );
-    }
-
-    private static void writeTestFile() {
-        BufferedWriter out = null;
-        try {
-            TEST_FILE.getParentFile().mkdirs();
-            final FileWriter writer  = new FileWriter( TEST_FILE );
-            out = new BufferedWriter( writer );
-            writeTestContentsTo( out );
-        } catch ( IOException e ) {
-            throw new RuntimeException( e );
-        } finally {
-            close( out );
-        }
-    }
-
-    private static void writeTestContentsTo( BufferedWriter out )
-            throws IOException {
-        out.write(
+        writeTestFile(
             "import com.ezanmoto.rep.Callable;\n\n"
           + "public class TestClass implements Callable {\n"
           + "    public Object call() {\n"
@@ -61,6 +39,39 @@ public class CallableCompilerTest {
           + "    }\n"
           + "}"
         );
+        Callable method = compiler.compile( TEST_FILE );
+        final Object result = method.call();
+        assertEquals( EXPECTED_RESULT, result );
+    }
+
+    private static void writeTestFile( String contents ) {
+        BufferedWriter out = null;
+        try {
+            TEST_FILE.getParentFile().mkdirs();
+            final FileWriter writer  = new FileWriter( TEST_FILE );
+            out = new BufferedWriter( writer );
+            out.write( contents );
+        } catch ( IOException e ) {
+            throw new RuntimeException( e );
+        } finally {
+            close( out );
+        }
+    }
+
+    @Test
+    public void compileSum() {
+        final Integer expected = 2;
+        writeTestFile(
+            "import com.ezanmoto.rep.Callable;\n\n"
+          + "public class TestClass implements Callable {\n"
+          + "    public Object call() {\n"
+          + "        return new Integer( 1 + 1 );\n"
+          + "    }\n"
+          + "}"
+        );
+        Callable method = compiler.compile( TEST_FILE );
+        final Object result = method.call();
+        assertEquals( expected, result );
     }
 
     private static void close( Closeable c ) {
