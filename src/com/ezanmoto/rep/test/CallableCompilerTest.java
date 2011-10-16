@@ -16,8 +16,9 @@ import static org.junit.Assert.assertEquals;
 
 public class CallableCompilerTest {
 
-    private static final File TEST_DIR  = new File( ""  );
-    private static final File TEST_FILE = new File( TEST_DIR, "" );
+    private static final File TEST_DIR  = new File( "test" );
+    private static final File TEST_FILE =
+        new File( TEST_DIR, "TestClass.java" );
 
     private static final String EXPECTED_RESULT = "0xDEAD_BEEF";
 
@@ -39,6 +40,7 @@ public class CallableCompilerTest {
     private static void writeTestFile() {
         BufferedWriter out = null;
         try {
+            TEST_FILE.getParentFile().mkdirs();
             final FileWriter writer  = new FileWriter( TEST_FILE );
             out = new BufferedWriter( writer );
             writeTestContentsTo( out );
@@ -52,9 +54,10 @@ public class CallableCompilerTest {
     private static void writeTestContentsTo( BufferedWriter out )
             throws IOException {
         out.write(
-            "public class TestClass implements Callable {\n"
+            "import com.ezanmoto.rep.Callable;\n\n"
+          + "public class TestClass implements Callable {\n"
           + "    public Object call() {\n"
-          + "        return " + EXPECTED_RESULT + ";\n"
+          + "        return \"" + EXPECTED_RESULT + "\";\n"
           + "    }\n"
           + "}"
         );

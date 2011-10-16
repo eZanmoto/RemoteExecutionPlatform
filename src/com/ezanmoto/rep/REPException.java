@@ -23,4 +23,12 @@ public class REPException extends RuntimeException {
     public REPException( String message, Throwable cause ) {
         super( message, cause );
     }
+
+    /**
+     * @param cause may have additional information on why this exception
+     * occurred
+     */
+    public REPException( Throwable cause ) {
+        super( cause );
+    }
 }
