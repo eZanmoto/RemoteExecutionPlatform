@@ -15,6 +15,11 @@
     <property name="junit.jar"      value="junit4.jar"/>
     <property name="guava.jar"      value="guava-r09.jar"/>
     <property name="production.jar" value="${ant.project.name}.jar"/>
+    <property name="server.jar"     value="REPServer.jar"/>
+    <property name="client.jar"     value="REPClient.jar"/>
+
+    <property name="server.class"   value="com.ezanmoto.rep.FunctionExecutor"/>
+    <property name="client.class"   value="com.ezanmoto.rep.RemoteFunction"/>
 
     <path id="classpath">
         <fileset dir="${lib.dir}">
@@ -49,6 +54,28 @@
         <jar destfile="${jar.dir}/${production.jar}"
              basedir="${classes.dir}"
              excludes="**/test/">
+        </jar>
+    </target>
+
+    <target name="jar-server" depends="compile">
+        <mkdir dir="${jar.dir}" />
+        <jar destfile="${jar.dir}/${server.jar}"
+             basedir="${classes.dir}"
+             excludes="**/test/">
+             <manifest>
+                 <attribute name="Main-Class" value="${server.class}" />
+             </manifest>
+        </jar>
+    </target>
+
+    <target name="jar-client" depends="compile">
+        <mkdir dir="${jar.dir}" />
+        <jar destfile="${jar.dir}/${client.jar}"
+             basedir="${classes.dir}"
+             excludes="**/test/">
+             <manifest>
+                 <attribute name="Main-Class" value="${client.class}" />
+             </manifest>
         </jar>
     </target>
 
@@ -87,6 +114,18 @@
 
     <target name="run"  depends="jar">
         <java jar="${jar.dir}/${production.jar}" fork="true">
+              <classpath refid="classpath"/>
+        </java>
+    </target>
+
+    <target name="run-server"  depends="jar-server">
+        <java jar="${jar.dir}/${server.jar}" fork="true">
+              <classpath refid="classpath"/>
+        </java>
+    </target>
+
+    <target name="run-client"  depends="jar-client">
+        <java jar="${jar.dir}/${client.jar}" fork="true">
               <classpath refid="classpath"/>
         </java>
     </target>

@@ -13,17 +13,26 @@ import java.net.Socket;
  *
  * @author S. M. Kelleher
  */
-public enum FunctionExecutor implements REPServer, Runnable {
+public enum StandardREPServer implements REPServer, Runnable {
     INSTANCE;
 
     private boolean running;
+
+    /**
+     * Start a basic {@code REPServer}.
+     *
+     * @param args the arguments to this {@code REPServer}
+     */
+    public static void main( String[] args ) {
+        getInstance().start();
+    }
 
     /**
      * Returns the only instance of this class.
      *
      * @return this instance
      */
-    public static FunctionExecutor getInstance() {
+    public static StandardREPServer getInstance() {
         return INSTANCE;
     }
 
@@ -45,6 +54,13 @@ public enum FunctionExecutor implements REPServer, Runnable {
             Callable function = (Callable) Sockets.readObjectFrom( client );
             final Object result = function.call();
             Sockets.writeObjectTo( client, SerializableObject.from( result ) );
+
+            // Accept socket
+            // Receive file name (sans extention) and output file to that file
+            // Compile file
+            // Use reflection and file name to get class
+            // Execute Callable method .call()
+            // Return result (don't need to change Serializable implementation)
         }
     }
 
