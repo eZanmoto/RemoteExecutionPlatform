@@ -50,11 +50,11 @@ public class CallableCompilerTest {
         return new File( TEST_DIR, name + ".java" );
     }
 
-    private static void writeTestFile( File testFile, String contents ) {
+    public static void writeTestFile( File testFile, String contents ) {
         BufferedWriter out = null;
         try {
             testFile.getParentFile().mkdirs();
-            final FileWriter writer  = new FileWriter( testFile );
+            final FileWriter writer = new FileWriter( testFile );
             out = new BufferedWriter( writer );
             out.write( contents );
         } catch ( IOException e ) {

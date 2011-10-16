@@ -1,7 +1,7 @@
-package com.ezanmoto.rep;
+package com.ezanmoto.rep.server;
 
 /**
- * Allows a remote device to execute commands on this device.
+ * Allows a remote device to execute code on this device.
  *
  * @author S. M. Kelleher
  */
@@ -11,7 +11,7 @@ public interface REPServer {
      * The port on which all {@code REPServer} classes should be listening for
      * requests.
      */
-    public static final int REP_PORT = 1309;
+    public static final int PORT = 1309;
 
     /**
      * Starts this {@code REPServer} processing incoming processing requests.

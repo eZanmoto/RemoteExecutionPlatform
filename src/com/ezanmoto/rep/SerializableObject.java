@@ -2,7 +2,7 @@ package com.ezanmoto.rep;
 
 import java.io.Serializable;
 
-class SerializableObject implements Serializable {
+public class SerializableObject implements Serializable {
 
     private final Object object;
 

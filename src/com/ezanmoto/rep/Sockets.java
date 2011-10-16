@@ -10,7 +10,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-class Sockets {
+public class Sockets {
 
     private Sockets() {
     }
@@ -46,20 +46,20 @@ class Sockets {
     }
 
     public static Object readObjectFrom( Socket socket ) {
-        InputStream is = Sockets.getInputStreamFrom( socket );
-        ObjectInputStream in = newObjectInputStreamFrom( is );
+        ObjectInputStream in = newObjectInputStreamFrom( socket );
+        Exception exception = null;
         try {
             return in.readObject();
         } catch ( IOException e ) {
-            throw new REPException(
-                    "Could not read object from input stream", e );
+            exception = e;
         } catch ( ClassNotFoundException e ) {
-            throw new REPException(
-                    "Could not read object from input stream", e );
+            exception = e;
         }
+        throw new REPException( "Could not read object from input stream",
+                                exception );
     }
 
-    private static InputStream getInputStreamFrom( Socket client ) {
+    public static InputStream getInputStreamFrom( Socket client ) {
         try {
             return client.getInputStream();
         } catch ( IOException e ) {
@@ -68,9 +68,9 @@ class Sockets {
         }
     }
 
-    private static ObjectInputStream newObjectInputStreamFrom(
-            InputStream in ) {
+    public static ObjectInputStream newObjectInputStreamFrom( Socket client ) {
         try {
+            final InputStream in = getInputStreamFrom( client );
             return new ObjectInputStream( in );
         } catch ( IOException e ) {
             throw new REPException(
@@ -89,7 +89,7 @@ class Sockets {
         }
     }
 
-    private static OutputStream getOutputStreamFor( Socket client ) {
+    public static OutputStream getOutputStreamFor( Socket client ) {
         try {
             return client.getOutputStream();
         } catch ( IOException e ) {
@@ -98,8 +98,7 @@ class Sockets {
         }
     }
 
-    private static ObjectOutputStream newObjectOutputStreamFor(
-            OutputStream out ) {
+    public static ObjectOutputStream newObjectOutputStreamFor( OutputStream out ) {
         try {
             return new ObjectOutputStream( out );
         } catch ( IOException e ) {

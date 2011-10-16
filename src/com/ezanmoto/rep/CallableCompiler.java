@@ -7,11 +7,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+import com.google.common.io.Files;
+
 public enum CallableCompiler implements Compiler<Callable> {
     INSTANCE;
 
-    private static final File ERROR_LOG = new File( "build/junit/stderr" );
-    private static final File CLASSES_DIR = new File( "build/classes" );
+    private static final File TEMP_DIR    = Files.createTempDir();
+    private static final File ERROR_LOG   = new File( TEMP_DIR, "stderr" );
+    private static final File CLASSES_DIR = new File( TEMP_DIR, "classes" );
     private static final String CLASSPATH = "src";
 
     private static final String CP_FLAG   = "-classpath";

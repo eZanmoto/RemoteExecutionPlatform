@@ -83,7 +83,11 @@
         <javadoc packagenames="com.ezanmoto.*.*"
                  sourcepath="${production.src}"
                  classpathref="classpath"
-                 destdir="${api.dir}"/>
+                 destdir="${api.dir}">
+            <fileset dir="${production.src}">
+                <exclude name="test"/>
+            </fileset>
+        </javadoc>
     </target>
 
     <target name="junit" depends="main">
