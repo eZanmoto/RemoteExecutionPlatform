@@ -79,8 +79,7 @@ public class Sockets {
     }
 
     public static void writeObjectTo( Socket client, Serializable o ) {
-        final OutputStream os = getOutputStreamFor( client );
-        final ObjectOutputStream out = newObjectOutputStreamFor( os );
+        final ObjectOutputStream out = newObjectOutputStreamFor( client );
         try {
             out.writeObject( o );
         } catch ( IOException e ) {
@@ -98,8 +97,9 @@ public class Sockets {
         }
     }
 
-    public static ObjectOutputStream newObjectOutputStreamFor( OutputStream out ) {
+    public static ObjectOutputStream newObjectOutputStreamFor( Socket client ) {
         try {
+            final OutputStream out = getOutputStreamFor( client );
             return new ObjectOutputStream( out );
         } catch ( IOException e ) {
             throw new REPException(

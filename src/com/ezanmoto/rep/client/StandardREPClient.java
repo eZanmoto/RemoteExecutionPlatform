@@ -29,6 +29,7 @@ public class StandardREPClient implements REPClient {
         final Socket socket = Sockets.newSocket( findHost(), REPServer.PORT );
         final OutputStream out = Sockets.getOutputStreamFor( socket );
         final ObjectInputStream in = Sockets.newObjectInputStreamFrom( socket );
+        /*
         try {
             List<String> lines = Files.readLines( f, Charset.defaultCharset() );
             for ( String line : lines ) {
@@ -43,6 +44,8 @@ public class StandardREPClient implements REPClient {
         } catch ( ClassNotFoundException e ) {
             throw new REPException( e );
         }
+        */
+        return null;
     }
 
     private String findHost() {

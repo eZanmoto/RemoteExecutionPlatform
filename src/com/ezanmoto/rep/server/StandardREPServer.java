@@ -33,20 +33,10 @@ public class StandardREPServer implements REPServer, Runnable {
 
     private boolean running;
 
-    /**
-     * Start a basic {@code REPServer}.
-     *
-     * @param args the arguments to this {@code REPServer}
-     */
     public static void main( String[] args ) {
         newInstance().start();
     }
 
-    /**
-     * Create a new {@code StandardREPServer}.
-     *
-     * @return a new {@code StandardREPServer}
-     */
     public static StandardREPServer newInstance() {
         return new StandardREPServer();
     }
@@ -70,6 +60,9 @@ public class StandardREPServer implements REPServer, Runnable {
         while ( running ) {
             final Socket client = Sockets.acceptFrom( server );
             final InputStream in = Sockets.getInputStreamFrom( client );
+            final ObjectOutputStream out =
+                Sockets.newObjectOutputStreamFor( client );
+            /*
             final String filename = readStringFrom( in );
             final String contents = readStringFrom( in );
             final File f = new File( TEMP_DIR, filename );
@@ -77,6 +70,7 @@ public class StandardREPServer implements REPServer, Runnable {
             Callable method = CallableCompiler.getInstance().compile( f );
             final Object result = method.call();
             Sockets.writeObjectTo( client, SerializableObject.from( result ) );
+            */
         }
     }
 
