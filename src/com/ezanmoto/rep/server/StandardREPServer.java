@@ -8,13 +8,13 @@ import com.ezanmoto.rep.Sockets;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -59,29 +59,28 @@ public class StandardREPServer implements REPServer, Runnable {
     private void listenTo( ServerSocket server ) {
         while ( running ) {
             final Socket client = Sockets.acceptFrom( server );
-            final InputStream in = Sockets.getInputStreamFrom( client );
+            final BufferedReader in = Sockets.getBufferedReaderFrom( client );
             final ObjectOutputStream out =
                 Sockets.newObjectOutputStreamFor( client );
-            /*
-            final String filename = readStringFrom( in );
-            final String contents = readStringFrom( in );
+            final String input = readStringFrom( in );
+            final String filename = firstLineOf( input );
+            final String contents = lastLinesOf( input );
             final File f = new File( TEMP_DIR, filename );
-            writeFile( f, contents );
+            writeContentsToFile( contents, f );
             Callable method = CallableCompiler.getInstance().compile( f );
             final Object result = method.call();
-            Sockets.writeObjectTo( client, SerializableObject.from( result ) );
-            */
+            Sockets.writeObjectTo( out, SerializableObject.from( result ) );
         }
     }
 
-    private static String readStringFrom( InputStream is ) {
+    private static String readStringFrom( BufferedReader in ) {
         try {
-            final InputStreamReader isr = new InputStreamReader( is );
-            final BufferedReader in = new BufferedReader( isr );
             final StringBuilder builder = new StringBuilder();
             String line;
-            while ( ( line = in.readLine() ) != null ) {
+            while ( ( line = in.readLine() ) != null
+                    && ! line.equals( "<EOF>" ) ) {
                 builder.append( line );
+                builder.append( '\n' );
             }
             return builder.toString();
         } catch ( IOException e ) {
@@ -89,10 +88,21 @@ public class StandardREPServer implements REPServer, Runnable {
         }
     }
 
-    private static void writeFile( File file, String contents ) {
+    private static String firstLineOf( String s ) {
+        final int newlineIndex = s.indexOf( "\n" );
+        return s.substring( 0, newlineIndex );
+    }
+
+    private static String lastLinesOf( String s ) {
+        final int newlineIndex = s.indexOf( "\n" );
+        return s.substring( newlineIndex + 1 );
+    }
+
+    private static void writeContentsToFile( String contents, File file ) {
         try {
-            FileWriter out = new FileWriter( file );
+            final PrintWriter out = new PrintWriter( file );
             out.write( contents );
+            out.flush();
         } catch ( IOException e ) {
             throw new REPException( e );
         }

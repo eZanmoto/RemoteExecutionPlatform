@@ -15,7 +15,8 @@ public enum CallableCompiler implements Compiler<Callable> {
     private static final File TEMP_DIR    = Files.createTempDir();
     private static final File ERROR_LOG   = new File( TEMP_DIR, "stderr" );
     private static final File CLASSES_DIR = new File( TEMP_DIR, "classes" );
-    private static final String CLASSPATH = "src";
+    // TODO add the classpath pragmatically
+    private static final String CLASSPATH = "build/classes/com/ezanmoto/rep";
 
     private static final String CP_FLAG   = "-classpath";
     private static final String DEST_FLAG = "-d";
@@ -39,7 +40,18 @@ public enum CallableCompiler implements Compiler<Callable> {
 
     private static void javac( String... command ) {
         final PrintWriter out = newPrintWriter( ERROR_LOG );
-        final int exitCode = com.sun.tools.javac.Main.compile( command, out );
+        out.write( "javac\n" );
+        for ( String c : command ) {
+            out.write( '\t' );
+            out.write( c );
+            out.write( '\n' );
+        }
+        int exitCode;
+        try {
+            exitCode = com.sun.tools.javac.Main.compile( command, out );
+        } catch ( Exception e ) {
+            throw new REPException( e );
+        }
         if ( exitCode != 0 ) {
             throw new REPException( "Error compiling, check '"
                 + ERROR_LOG.getAbsolutePath() + "' for details" );

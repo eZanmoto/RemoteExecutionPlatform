@@ -18,13 +18,16 @@
     <property name="server.jar"     value="REPServer.jar"/>
     <property name="client.jar"     value="REPClient.jar"/>
 
-    <property name="server.class"   value="com.ezanmoto.rep.FunctionExecutor"/>
-    <property name="client.class"   value="com.ezanmoto.rep.RemoteFunction"/>
+    <property name="server.class"
+              value="com.ezanmoto.rep.server.StandardREPServer"/>
+    <property name="client.class"
+              value="com.ezanmoto.rep.client.StandardREPClient"/>
 
     <path id="classpath">
         <fileset dir="${lib.dir}">
             <include name="${junit.jar}"/>
             <include name="${guava.jar}"/>
+            <include name="**/*.jar"/>
         </fileset>
     </path>
 
@@ -123,14 +126,20 @@
     </target>
 
     <target name="run-server"  depends="jar-server">
-        <java jar="${jar.dir}/${server.jar}" fork="true">
-              <classpath refid="classpath"/>
+        <java fork="true" classname="${server.class}">
+            <classpath>
+                <path refid="classpath"/>
+                <path location="${jar.dir}/${server.jar}"/>
+            </classpath>
         </java>
     </target>
 
     <target name="run-client"  depends="jar-client">
-        <java jar="${jar.dir}/${client.jar}" fork="true">
-              <classpath refid="classpath"/>
+        <java fork="true" classname="${client.class}">
+            <classpath>
+                <path refid="classpath"/>
+                <path location="${jar.dir}/${client.jar}"/>
+            </classpath>
         </java>
     </target>
 
