@@ -5,14 +5,14 @@ import com.ezanmoto.rep.CallableCompiler;
 import com.ezanmoto.rep.Compiler;
 import com.ezanmoto.rep.REPException;
 
-import java.io.BufferedWriter;
-import java.io.Closeable;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
+
+import com.google.common.io.Files;
 
 public class CallableCompilerTest {
 
@@ -23,6 +23,11 @@ public class CallableCompilerTest {
     private static final String EXPECTED_RESULT = "0xDEAD_BEEF";
 
     private final Compiler<Callable> compiler = CallableCompiler.getInstance();
+
+    @Test( expected = NullPointerException.class )
+    public void testNull() {
+        compiler.compile( null );
+    }
 
     @Test( expected = REPException.class )
     public void testAbsentFile() {
@@ -51,16 +56,11 @@ public class CallableCompilerTest {
     }
 
     public static void writeTestFile( File testFile, String contents ) {
-        BufferedWriter out = null;
         try {
             testFile.getParentFile().mkdirs();
-            final FileWriter writer = new FileWriter( testFile );
-            out = new BufferedWriter( writer );
-            out.write( contents );
+            Files.write( contents, testFile, Charset.defaultCharset() );
         } catch ( IOException e ) {
             throw new RuntimeException( e );
-        } finally {
-            close( out );
         }
     }
 
@@ -80,15 +80,5 @@ public class CallableCompilerTest {
         Callable method = compiler.compile( source );
         final Object result = method.call();
         assertEquals( expected, result );
-    }
-
-    private static void close( Closeable c ) {
-        try {
-            if ( c != null ) {
-                c.close();
-            }
-        } catch ( IOException e ) {
-            // TODO log exception
-        }
     }
 }
