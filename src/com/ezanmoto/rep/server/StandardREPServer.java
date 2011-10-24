@@ -51,14 +51,25 @@ public class StandardREPServer implements REPServer, Runnable {
 
     @Override
     public void run() {
+        showSplash();
         final ServerSocket server = Sockets.newSocketServer( PORT );
         running = true;
         listenTo( server );
     }
 
+    private void showSplash() {
+        System.out.println(
+            "Standard REP Server\n"
+          + "written by Sean Kelleher\n\n"
+          + "[!] WARNING: Security Manager is not configured\n"
+        );
+    }
+
     private void listenTo( ServerSocket server ) {
         while ( running ) {
             final Socket client = Sockets.acceptFrom( server );
+            System.out.println( "Received connection from "
+                              + client.getInetAddress() );
             final BufferedReader in = Sockets.getBufferedReaderFrom( client );
             final ObjectOutputStream out =
                 Sockets.newObjectOutputStreamFor( client );
@@ -66,10 +77,15 @@ public class StandardREPServer implements REPServer, Runnable {
             final String filename = firstLineOf( input );
             final String contents = lastLinesOf( input );
             final File f = new File( TEMP_DIR, filename );
+            System.out.println( "Writing class file '" + f + "'" );
             writeContentsToFile( contents, f );
+            System.out.println( "Wrote class file '" + f + "'" );
             Callable method = CallableCompiler.getInstance().compile( f );
+            System.out.println( "Got instance of class '" + f + "'" );
             final Object result = method.call();
+            System.out.println( "Invoked '" + f + ".call()'" );
             Sockets.writeObjectTo( out, SerializableObject.from( result ) );
+            System.out.println( "Sent result, '" + result + "'" );
         }
     }
 
