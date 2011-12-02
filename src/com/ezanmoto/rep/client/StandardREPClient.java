@@ -17,13 +17,7 @@ import java.net.Socket;
 import java.nio.charset.Charset;
 import java.util.List;
 
-import com.google.common.io.Files;
-
 public class StandardREPClient implements REPClient {
-
-    public static void main( String[] args ) {
-        newInstance().call( new File( "build/junit/Test.java" ) );
-    }
 
     public static StandardREPClient newInstance() {
         return new StandardREPClient();
@@ -41,9 +35,8 @@ public class StandardREPClient implements REPClient {
         try {
             out.write( f.getName() + "\n" + contents + "\n<EOF>\n" );
             out.flush();
-            System.out.println(
-                ( (SerializableObject) in.readObject() ).getObject() );
-            return null;
+            SerializableObject result = (SerializableObject) in.readObject();
+            return result.getObject();
         } catch ( IOException e ) {
             throw new REPException( e );
         } catch ( ClassNotFoundException e ) {

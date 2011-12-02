@@ -13,7 +13,6 @@
     <property name="lib.dir"        value="/usr/share/java"/>
 
     <property name="junit.jar"      value="junit4.jar"/>
-    <property name="guava.jar"      value="guava-r09.jar"/>
     <property name="production.jar" value="${ant.project.name}.jar"/>
     <property name="server.jar"     value="REPServer.jar"/>
     <property name="client.jar"     value="REPClient.jar"/>
@@ -26,7 +25,6 @@
     <path id="classpath">
         <fileset dir="${lib.dir}">
             <include name="${junit.jar}"/>
-            <include name="${guava.jar}"/>
             <include name="**/*.jar"/>
         </fileset>
     </path>
@@ -49,22 +47,20 @@
     <target name="compile">
         <mkdir dir="${classes.dir}"/>
         <javac srcdir="${production.src}" destdir="${classes.dir}"
-               classpathref="classpath"/>
+               classpathref="classpath" debug="true" debuglevel="lines,source"/>
     </target>
 
     <target name="jar" depends="compile">
         <mkdir dir="${jar.dir}" />
         <jar destfile="${jar.dir}/${production.jar}"
-             basedir="${classes.dir}"
-             excludes="**/test/">
+             basedir="${classes.dir}">
         </jar>
     </target>
 
     <target name="jar-server" depends="compile">
         <mkdir dir="${jar.dir}" />
         <jar destfile="${jar.dir}/${server.jar}"
-             basedir="${classes.dir}"
-             excludes="**/test/">
+             basedir="${classes.dir}">
              <manifest>
                  <attribute name="Main-Class" value="${server.class}" />
              </manifest>
@@ -74,8 +70,7 @@
     <target name="jar-client" depends="compile">
         <mkdir dir="${jar.dir}" />
         <jar destfile="${jar.dir}/${client.jar}"
-             basedir="${classes.dir}"
-             excludes="**/test/">
+             basedir="${classes.dir}">
              <manifest>
                  <attribute name="Main-Class" value="${client.class}" />
              </manifest>
@@ -91,32 +86,6 @@
                 <exclude name="test"/>
             </fileset>
         </javadoc>
-    </target>
-
-    <target name="junit" depends="main">
-        <mkdir dir="${junit.dir}" />
-
-        <junit printsummary="true" fork="false" haltonfailure="false">
-            <classpath refid="classpath.test"/>
-            <formatter type="xml"/>
-
-            <batchtest todir="${junit.dir}">
-                <fileset dir="${production.src}">
-                    <include name="**/*Test.java"/>
-                </fileset>
-            </batchtest>
-        </junit>
-
-        <junitreport todir="${junit.dir}">
-            <fileset dir="${junit.dir}">
-                <include name="TEST-*.xml"/>
-            </fileset>
-            <report todir="${junit.dir}"/>
-        </junitreport>
-
-        <path>
-            <pathelement location="${junit.dir}/index.html"/>
-        </path>
     </target>
 
     <target name="run"  depends="jar">

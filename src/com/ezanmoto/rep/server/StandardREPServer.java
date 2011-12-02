@@ -20,8 +20,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.io.Files;
-
 /**
  * Executes received functions.
  *
@@ -29,7 +27,7 @@ import com.google.common.io.Files;
  */
 public class StandardREPServer implements REPServer, Runnable {
 
-    private static final File TEMP_DIR = Files.createTempDir();
+    private static final File TEMP_DIR = CallableCompiler.createTempDir();
 
     private boolean running;
 
@@ -61,6 +59,7 @@ public class StandardREPServer implements REPServer, Runnable {
         System.out.println(
             "Standard REP Server\n"
           + "written by Sean Kelleher\n\n"
+          + "[+] Temporary directory located at: " + TEMP_DIR + "\n"
           + "[!] WARNING: Security Manager is not configured\n"
         );
     }
