@@ -27,8 +27,13 @@ public class StandardREPClient implements REPClient {
     }
 
     @Override
-    public Object call( File f ) {
-        final Socket socket = Sockets.newSocket( findHost(), REPServer.PORT );
+    public Object callLocally( File f ) {
+        return callWithHost( f, "localhost" );
+    }
+
+    @Override
+    public Object callWithHost( File f, String host ) {
+        final Socket socket = Sockets.newSocket( host, REPServer.PORT );
         final PrintWriter out = Sockets.getPrintWriterFor( socket );
         final ObjectInputStream in = Sockets.newObjectInputStreamFrom( socket );
         final String contents = readContentsOf( f ).trim();
